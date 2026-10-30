@@ -3,7 +3,7 @@
 > **Authors:** Aman Bhandhari & Vaibhvendra Singh  
 > **Core Stack:** Apache Spark (PySpark), Apache Kafka, Flask, Chart.js  
 > **Benchmark Dataset:** IEEE-CIS 590,540 Real Financial Transactions  
-> **Decision Speed:** < 0.08 seconds per transaction  
+> **Decision Speed:** < 0.08 seconds per transaction
 
 ---
 
@@ -12,11 +12,13 @@
 In modern banking, millions of credit card transactions occur every second. When a thief steals card details, traditional batch analysis systems (which run hours or days after the event) are useless because funds have already settled.
 
 ### The Real-Time Engineering Challenge:
+
 1. **Ultra-Low Latency (< 80ms):** Every transaction must be scored before the point-of-sale terminal or checkout page finalizes.
 2. **Minimizing False Alarms:** If a system aggressively declines legitimate customers buying groceries, the bank loses business and customer trust.
 3. **Severe Class Imbalance:** Fraud represents only **3.5%** of all transactions. Detecting rare malicious patterns in 96.5% normal noise requires calibrated ensemble machine learning.
 
 **The Solution:** VISTA combines distributed message streaming (**Apache Kafka**), real-time big data micro-batch processing (**PySpark MLlib**), and a calibrated **Gradient-Boosted Tree (GBT)** model to deliver instant automated bank decisions:
+
 - 🟢 **Under 9.0%** $\rightarrow$ Instant Approval
 - 🟡 **9.0% to 14.9%** $\rightarrow$ SMS OTP Challenge
 - 🔴 **15.0% and Up** $\rightarrow$ Immediate Scam Block & Card Freeze
@@ -28,20 +30,22 @@ In modern banking, millions of credit card transactions occur every second. When
 Trained and evaluated on the official **IEEE-CIS Fraud Detection dataset** (Vesta Corporation) containing **590,540 real transactions**.
 
 ### The 3.5% Needle-in-a-Haystack Challenge:
+
 - **96.5% Genuine Transactions (569,877 records)**
 - **3.5% Fraud Transactions (20,663 records)**
 
 Because genuine transactions dominate, simple accuracy is a deceptive metric. Models were tuned using **ROC-AUC (Area Under the Curve)**, **Precision**, and **Recall**.
 
 ### Core Feature Definitions:
-| Feature | Description | Fraud Detection Significance |
-| :--- | :--- | :--- |
-| `TransactionAmt` | Money amount in USD ($) | Outlier detection for sudden large balance drains ($4,200 vs $45). |
-| `C1 & C2` | Velocity counters (swipes in short window) | **Primary Bot Indicator:** Normal humans swipe 1 time; hacker bots make 50+ automated attempts. |
-| `ProductCD` | Purchase Channel / Product Code | Categorized into: <br>• **W**: Web Shopping (everyday retail, ~2% fraud rate)<br>• **C**: Cash / Wire Transfer (highest fraud rate: ~11.7%)<br>• **R**: Recurring / Rent (monthly subscriptions)<br>• **S**: Software & Digital Services<br>• **H**: Hotel & Travel |
-| `card4 & card6` | Card Network & Tier | Identifies statistical chargeback anomalies across card networks (Visa, Mastercard, Discover) and credit vs debit lines. |
-| `DeviceType` | Device Origin | Tracks transactions from Mobile Phone, Desktop PC, or Tablet. |
-| `D1 - D15` | Timedeltas (days since previous card event) | Detects dormant or hijacked cards that suddenly show activity. |
+
+| Feature          | Description                                 | Fraud Detection Significance                                                                                                                                                                                                                                        |
+| :--------------- | :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TransactionAmt` | Money amount in USD ($)                     | Outlier detection for sudden large balance drains ($4,200 vs $45).                                                                                                                                                                                                  |
+| `C1 & C2`        | Velocity counters (swipes in short window)  | **Primary Bot Indicator:** Normal humans swipe 1 time; hacker bots make 50+ automated attempts.                                                                                                                                                                     |
+| `ProductCD`      | Purchase Channel / Product Code             | Categorized into: <br>• **W**: Web Shopping (everyday retail, ~2% fraud rate)<br>• **C**: Cash / Wire Transfer (highest fraud rate: ~11.7%)<br>• **R**: Recurring / Rent (monthly subscriptions)<br>• **S**: Software & Digital Services<br>• **H**: Hotel & Travel |
+| `card4 & card6`  | Card Network & Tier                         | Identifies statistical chargeback anomalies across card networks (Visa, Mastercard, Discover) and credit vs debit lines.                                                                                                                                            |
+| `DeviceType`     | Device Origin                               | Tracks transactions from Mobile Phone, Desktop PC, or Tablet.                                                                                                                                                                                                       |
+| `D1 - D15`       | Timedeltas (days since previous card event) | Detects dormant or hijacked cards that suddenly show activity.                                                                                                                                                                                                      |
 
 ---
 
@@ -49,17 +53,18 @@ Because genuine transactions dominate, simple accuracy is a deceptive metric. Mo
 
 In `1_train_models.py`, five architectures were trained on an 80/20 stratified split of 590,540 records:
 
-| Model Architecture | Test Accuracy | Precision | Recall (Catch Rate) | F1-Score | ROC-AUC | Inference Speed |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **🏆 Gradient-Boosted Trees (GBT)** | **96.7%** | **95.8%** | **91.2%** | **93.4%** | **0.892** | **< 0.08s** |
-| Random Forest Classifier | 95.9% | 94.2% | 88.5% | 91.3% | 0.881 | < 0.09s |
-| Decision Tree Classifier | 94.1% | 89.6% | 85.0% | 87.2% | 0.840 | < 0.05s |
-| Logistic Regression (L2) | 92.4% | 84.1% | 76.8% | 80.3% | 0.795 | < 0.04s |
-| Linear SVC | 92.1% | 83.5% | 75.9% | 79.5% | 0.789 | < 0.04s |
+| Model Architecture                  | Test Accuracy | Precision | Recall (Catch Rate) | F1-Score  |  ROC-AUC  | Inference Speed |
+| :---------------------------------- | :-----------: | :-------: | :-----------------: | :-------: | :-------: | :-------------: |
+| **🏆 Gradient-Boosted Trees (GBT)** |   **96.7%**   | **95.8%** |      **91.2%**      | **93.4%** | **0.892** |   **< 0.08s**   |
+| Random Forest Classifier            |     95.9%     |   94.2%   |        88.5%        |   91.3%   |   0.881   |     < 0.09s     |
+| Decision Tree Classifier            |     94.1%     |   89.6%   |        85.0%        |   87.2%   |   0.840   |     < 0.05s     |
+| Logistic Regression (L2)            |     92.4%     |   84.1%   |        76.8%        |   80.3%   |   0.795   |     < 0.04s     |
+| Linear SVC                          |     92.1%     |   83.5%   |        75.9%        |   79.5%   |   0.789   |     < 0.04s     |
 
 ### Why Gradient-Boosted Trees Won:
+
 1. **Sequential Error Correction:** Unlike Random Forest, GBT builds trees iteratively—each tree focuses specifically on the subtle edge cases missed by previous trees.
-2. **Multi-Feature Interactions:** Catches the non-linear relationship between *velocity spikes + large amounts + high-risk digital wire transfers (Category C)*.
+2. **Multi-Feature Interactions:** Catches the non-linear relationship between _velocity spikes + large amounts + high-risk digital wire transfers (Category C)_.
 3. **91.2% Scam Catch Rate:** Catches over 9 out of 10 scams while maintaining low false positives (3.3%).
 
 ---
@@ -69,7 +74,7 @@ In `1_train_models.py`, five architectures were trained on an 80/20 stratified s
 When a card is swiped (e.g. John spends **$117.00** on a jacket via Visa):
 
 1. **Feature Vectorization:** PySpark `VectorAssembler` converts the transaction into numerical feature vector $\vec{x}$.
-2. **20-Tree Ensemble Evaluation:** 
+2. **20-Tree Ensemble Evaluation:**
    - Tree 1 (Amount check): Vote = `-0.8`
    - Tree 2 (Velocity check): Vote = `-1.2`
    - Tree 3 (Product Category W check): Vote = `-0.9`
