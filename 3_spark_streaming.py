@@ -185,11 +185,17 @@ def start_streaming():
             else:
                 risk_factors.append("👤 Normal Human Speed: Swiped just once like a real customer standing at a counter.")
                 
-            pcd = str(raw_txn.get("ProductCD", "W")).upper()
+            pcd = str(raw_txn.get("ProductCD", "W")).upper().strip()
             if pcd == "C":
-                risk_factors.append("🌐 High-Risk Wire Transfer: This payment uses Category 'C' (direct digital transfer), which is the #1 way online scammers quickly steal money.")
+                risk_factors.append("💸 Cash / Wire Transfer: Direct digital cash/wire transfer, which is the #1 way online scammers quickly steal money.")
+            elif pcd == "R":
+                risk_factors.append("🔁 Recurring / Rent: Regular monthly bill or subscription charge.")
+            elif pcd == "S":
+                risk_factors.append("💻 Software & Digital Services: Online digital download, app, or software purchase.")
+            elif pcd == "H":
+                risk_factors.append("🏨 Hotel & Travel Booking: Vacation lodging, flight, or hotel stay booking.")
             else:
-                risk_factors.append("🛍️ Safe Store Category: Standard web or store checkout.")
+                risk_factors.append("🛍️ Web Shopping: Standard online retail purchase or everyday shopping.")
                 
             if str(card).lower() in ["discover", "unknown"]:
                 risk_factors.append(f"💳 Unfamiliar Card Network: '{card}' cards have shown higher rates of stolen cards in past fraud logs.")

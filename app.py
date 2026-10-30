@@ -32,11 +32,18 @@ def compute_xai_factors(amt, card, c1, product_cd, risk_prob):
     else:
         factors.append("👤 Normal Human Speed: Swiped just once like a real customer standing at a counter.")
 
-    # 3. Channel / Payment Type
-    if str(product_cd).upper() == "C":
-        factors.append("🌐 High-Risk Wire Transfer: This payment uses Category 'C' (direct digital transfer), which is the #1 way online scammers quickly steal money.")
+    # 3. Channel / Purchase Type
+    pcd_upper = str(product_cd).upper().strip()
+    if pcd_upper == "C":
+        factors.append("💸 Cash / Wire Transfer: Direct digital cash/wire transfer, which is the #1 way online scammers quickly steal money.")
+    elif pcd_upper == "R":
+        factors.append("🔁 Recurring / Rent: Regular monthly bill or subscription charge.")
+    elif pcd_upper == "S":
+        factors.append("💻 Software & Digital Services: Online digital download, app, or software purchase.")
+    elif pcd_upper == "H":
+        factors.append("🏨 Hotel & Travel Booking: Vacation lodging, flight, or hotel stay booking.")
     else:
-        factors.append("🛍️ Safe Store Category: Standard web or store checkout.")
+        factors.append("🛍️ Web Shopping: Standard online retail purchase or everyday shopping.")
 
     # 4. Card Brand Check
     if str(card).lower() in ["discover", "unknown"]:

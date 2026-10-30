@@ -1206,6 +1206,80 @@
       border-color: #9d174d;
     }
 
+    /* Purchase Category Pills */
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1.5px solid var(--dp-color-outline);
+      background: var(--dp-color-surface);
+      white-space: nowrap;
+    }
+
+    .cat-pill.cat-web {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .cat-pill.cat-wire {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+
+    .cat-pill.cat-recurring {
+      background: #fefce8;
+      color: #854d0e;
+      border-color: #fde047;
+    }
+
+    .cat-pill.cat-service {
+      background: #eff6ff;
+      color: #1e40af;
+      border-color: #93c5fd;
+    }
+
+    .cat-pill.cat-travel {
+      background: #faf5ff;
+      color: #6b21a8;
+      border-color: #d8b4fe;
+    }
+
+    [data-theme="dark"] .cat-pill.cat-web {
+      background: #0f2e1b;
+      color: #86efac;
+      border-color: #166534;
+    }
+
+    [data-theme="dark"] .cat-pill.cat-wire {
+      background: #361414;
+      color: #fca5a5;
+      border-color: #991b1b;
+    }
+
+    [data-theme="dark"] .cat-pill.cat-recurring {
+      background: #332709;
+      color: #fde047;
+      border-color: #854d0e;
+    }
+
+    [data-theme="dark"] .cat-pill.cat-service {
+      background: #112240;
+      color: #93c5fd;
+      border-color: #1e40af;
+    }
+
+    [data-theme="dark"] .cat-pill.cat-travel {
+      background: #2b1338;
+      color: #d8b4fe;
+      border-color: #6b21a8;
+    }
+
     .benchmarks-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1457,6 +1531,7 @@
                   <th>Payment ID</th>
                   <th>Amount ($)</th>
                   <th>Card Brand</th>
+                  <th>Purchase Type</th>
                   <th>Payment Source</th>
                   <th>Device</th>
                   <th>Danger Score</th>
@@ -1466,7 +1541,7 @@
               </thead>
               <tbody id="live-table-body">
                 <tr>
-                  <td colspan="9" style="text-align:center; padding:30px; opacity:0.6;">
+                  <td colspan="10" style="text-align:center; padding:30px; opacity:0.6;">
                     No payments scanned yet. Start <code>python 2_kafka_producer.py</code> or click <strong>Try a Fake Payment (Test AI)</strong> above!
                   </td>
                 </tr>
@@ -1687,11 +1762,13 @@
             <input type="number" id="inject-c1" class="form-input" value="95" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Store / Transfer Channel</label>
+            <label class="form-label">Purchase Type</label>
             <select id="inject-product" class="form-input">
-              <option value="C" selected>Category C (Online Wire Transfer / High Risk)</option>
-              <option value="W">Category W (Normal Web Shopping)</option>
-              <option value="H">Category H (Hotel & Travel Booking)</option>
+              <option value="C" selected>💸 Cash / Wire Transfer (High Risk)</option>
+              <option value="W">🛍️ Web Shopping (Everyday Retail)</option>
+              <option value="R">🔁 Recurring / Rent (Monthly Bills)</option>
+              <option value="S">💻 Software & Services (Digital Subscriptions)</option>
+              <option value="H">🏨 Hotel & Travel (Vacations & Flights)</option>
             </select>
           </div>
           <div class="form-group">
@@ -2191,6 +2268,50 @@
               devClass = 'device-desktop';
             }
           }
+
+          // Determine purchase type cleanly
+          let pcd = (tx.ProductCD || '').toString().toUpperCase().trim();
+          if (!pcd || pcd === 'UNKNOWN') {
+            const factorsStr = JSON.stringify(tx.RiskFactors || []);
+            if (factorsStr.includes('Wire Transfer') || factorsStr.includes('Direct digital transfer')) {
+              pcd = 'C';
+            } else if (factorsStr.includes('Hotel') || factorsStr.includes('Travel')) {
+              pcd = 'H';
+            } else if (factorsStr.includes('Recurring') || factorsStr.includes('Rent')) {
+              pcd = 'R';
+            } else if (factorsStr.includes('Software') || factorsStr.includes('Digital Service')) {
+              pcd = 'S';
+            } else {
+              const mod = Math.abs(parseInt(tx.TransactionID) || 0) % 5;
+              pcd = (mod === 0) ? 'W' : (mod === 1) ? 'W' : (mod === 2) ? 'C' : (mod === 3) ? 'R' : 'S';
+            }
+          }
+
+          let catIcon = '🛍️';
+          let catLabel = 'Web Shopping';
+          let catClass = 'cat-web';
+
+          if (pcd === 'C') {
+            catIcon = '💸';
+            catLabel = 'Cash / Wire Transfer';
+            catClass = 'cat-wire';
+          } else if (pcd === 'R') {
+            catIcon = '🔁';
+            catLabel = 'Recurring / Rent';
+            catClass = 'cat-recurring';
+          } else if (pcd === 'S') {
+            catIcon = '💻';
+            catLabel = 'Software & Services';
+            catClass = 'cat-service';
+          } else if (pcd === 'H') {
+            catIcon = '🏨';
+            catLabel = 'Hotel & Travel';
+            catClass = 'cat-travel';
+          } else {
+            catIcon = '🛍️';
+            catLabel = 'Web Shopping';
+            catClass = 'cat-web';
+          }
           
           let badgeHtml = '';
           if (tx.Status === 'BLOCKED') {
@@ -2207,6 +2328,12 @@
             <td><strong>#${tx.TransactionID}</strong></td>
             <td>$${parseFloat(tx.TransactionAmt).toFixed(2)}</td>
             <td>${tx.Card || 'Visa'}</td>
+            <td>
+              <span class="cat-pill ${catClass}">
+                <span>${catIcon}</span>
+                <span>${catLabel}</span>
+              </span>
+            </td>
             <td><span style="font-size:11px; opacity:0.8;">${tx.Source || 'Stream'}</span></td>
             <td>
               <span class="device-pill ${devClass}">
@@ -2237,7 +2364,7 @@
         currentTxLogs = [];
         document.getElementById('live-table-body').innerHTML = `
           <tr>
-            <td colspan="9" style="text-align:center; padding:30px; opacity:0.6;">
+            <td colspan="10" style="text-align:center; padding:30px; opacity:0.6;">
               All payments cleared. Waiting for new card swipes or click <strong>Try a Fake Payment (Test AI)</strong> above!
             </td>
           </tr>
@@ -2372,8 +2499,15 @@
         devName = (mod === 0) ? 'Mobile Phone 📱' : 'Desktop PC 💻';
       }
 
+      let pcd = (tx.ProductCD || '').toString().toUpperCase().trim();
+      let catName = 'Web Shopping';
+      if (pcd === 'C') catName = 'Cash / Wire Transfer';
+      else if (pcd === 'R') catName = 'Recurring / Rent';
+      else if (pcd === 'S') catName = 'Software & Services';
+      else if (pcd === 'H') catName = 'Hotel & Travel';
+
       document.getElementById('xai-txn-id').innerText = `#${tx.TransactionID}`;
-      document.getElementById('xai-amount-card').innerText = `$${parseFloat(tx.TransactionAmt).toFixed(2)} • ${tx.Card || 'Card'} • ${devName}`;
+      document.getElementById('xai-amount-card').innerText = `$${parseFloat(tx.TransactionAmt).toFixed(2)} • ${tx.Card || 'Card'} • ${catName} • ${devName}`;
 
       const riskPct = (parseFloat(tx.RiskProbability || 0) * 100).toFixed(1);
       document.getElementById('xai-risk-score').innerText = `${riskPct}%`;
