@@ -5,6 +5,7 @@ import random
 from flask import Flask, render_template, jsonify, request, send_from_directory
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 BENCHMARKS_FILE = "outputs/model_benchmarks.json"
 LIVE_PREDICTIONS_FILE = "outputs/live_predictions.json"
