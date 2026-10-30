@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VISTA - Big Data Financial Fraud Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --dp-color-ground: #f4efe6; /* Calmer, warmer paper ground - eliminates eye strain */
+      --dp-color-panel: #fcfbf7;  /* Soft off-white panel instead of pure #fff */
+      --dp-color-ink: #253044;
+      --dp-color-outline: #252b3a;
+      --dp-color-accent: #6434df;
+      --dp-color-accent-secondary: #ff78c5;
+      --dp-color-accent-warm: #ffd05b;
+      --dp-color-accent-fresh: #9bf1cd;
+      --dp-color-field-soft: #e2f5ec;
+      --dp-color-selection: #ebe3f7;
+      --dp-color-rule-muted: #b8b6c5;
+      --dp-typography-display: 'Host Grotesk', sans-serif;
+      --dp-typography-reading: 'Instrument Sans', sans-serif;
+      --dp-typography-reading-compact: 16px;
+      --dp-typography-label: 14px;
+      --dp-typography-metadata: 13px;
+      --dp-typography-reading-leading: 1.65;
+      --dp-spacing-gap-compact: 12px;
+      --dp-radius-corner: 17px;
+      --dp-border-outline-width: 3px;
+      --dp-border-detail-width: 2px;
+      --dp-motion-interaction: 180ms;
+    }
+
+    /* DARK THEME TOKENS - HIGH CONTRAST READABILITY */
+    [data-theme="dark"] {
+      --dp-color-ground: #0b0e14;
+      --dp-color-panel: #151922;
+      --dp-color-ink: #f0f4fc;
+      --dp-color-outline: #2a3243;
+      --dp-color-field-soft: #192723;
+      --dp-color-selection: #2a1f4a;
+      --dp-color-rule-muted: #3a455a;
+    }
+
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .kpi-card,
+    [data-theme="dark"] .model-card,
+    [data-theme="dark"] .table-container,
+    [data-theme="dark"] .matrix-cell,
+    [data-theme="dark"] .process-step,
+    [data-theme="dark"] .matrix-box {
+      background: #181d29 !important;
+      color: #f0f4fc !important;
+      border-color: #353f54 !important;
+    }
+
+    [data-theme="dark"] .hero-heading,
+    [data-theme="dark"] .brand-title,
+    [data-theme="dark"] .section-title,
+    [data-theme="dark"] .kpi-val,
+    [data-theme="dark"] .stat-num,
+    [data-theme="dark"] .model-name,
+    [data-theme="dark"] .step-title,
+    [data-theme="dark"] th,
+    [data-theme="dark"] td strong {
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .kpi-tag,
+    [data-theme="dark"] .stat-lbl,
+    [data-theme="dark"] .step-body,
+    [data-theme="dark"] .hero-desc,
+    [data-theme="dark"] td,
+    [data-theme="dark"] .matrix-lbl,
+    [data-theme="dark"] p {
+      color: #c5d0e3 !important;
+      opacity: 1 !important;
+    }
+
+    [data-theme="dark"] th {
+      background: #202738 !important;
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] tr:hover td {
+      background: #232b3e !important;
+    }
+
+    [data-theme="dark"] .geometric-stage {
+      background: #1c2130 !important;
+      border-color: #353f54 !important;
+    }
+
+    [data-theme="dark"] .team-member-pill {
+      background: #162422 !important;
+      color: #9bf1cd !important;
+      border-color: #27473f !important;
+    }
+
+    [data-theme="dark"] .nav-tabs {
+      background: #11141d !important;
+      border-color: #2a3243 !important;
+    }
+
+    [data-theme="dark"] .nav-btn {
+      color: #e2e8f0 !important;
+    }
+
+    [data-theme="dark"] .nav-btn:hover {
+      background: rgba(100, 52, 223, 0.4) !important;
+    }
+
+    [data-theme="dark"] .nav-btn.active {
+      background: var(--dp-color-accent) !important;
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .clear-btn {
+      background: #241926 !important;
+      color: #ff7895 !important;
+      border-color: #522736 !important;
+    }
+
+    [data-theme="dark"] .theme-toggle-btn {
+      background: #181d29 !important;
+      color: #ffd05b !important;
+      border-color: #353f54 !important;
+    }
+
+    [data-theme="dark"] .chart-card,
+    [data-theme="dark"] .modal-card,
+    [data-theme="dark"] .form-input,
+    [data-theme="dark"] .xai-factor-item,
+    [data-theme="dark"] .dossier-paper {
+      background: #151922 !important;
+      color: #f0f4fc !important;
+      border-color: #353f54 !important;
+    }
+
+    [data-theme="dark"] .xai-inspect-btn {
+      background: #1f2637 !important;
+      color: #9bf1cd !important;
+      border-color: #353f54 !important;
+    }
+
+    [data-theme="dark"] .xai-inspect-btn:hover {
+      background: var(--dp-color-accent) !important;
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .scenario-btn {
+      background: #11141d !important;
+      color: #c5d0e3 !important;
+      border-color: #2a3243 !important;
+    }
+
+    [data-theme="dark"] .modal-close,
+    [data-theme="dark"] .btn-secondary {
+      color: #f0f4fc !important;
+      border-color: #353f54 !important;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: #0b0e14;
+    }
+
+    body {
+      background-color: transparent !important;
+      color: var(--dp-color-ink);
+      font-family: var(--dp-typography-reading);
+      font-size: var(--dp-typography-reading-compact);
+      line-height: var(--dp-typography-reading-leading);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* FULLSCREEN BACKGROUND VIDEO */
+    .video-bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    #bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(244, 239, 230, 0.42) 0%, rgba(244, 239, 230, 0.76) 100%);
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .video-overlay {
+      background: radial-gradient(circle at center, rgba(11, 14, 20, 0.45) 0%, rgba(11, 14, 20, 0.82) 100%);
+    }
+
+    /* FLOATING PILL NAVBAR SHAPE - FULLY ROUNDED CAPSULE */
+    .header-wrapper {
+      position: sticky;
+      top: 20px;
+      z-index: 999;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0 24px;
+      margin-bottom: 24px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1560px; /* Expands to utilize screen width nicely */
+      height: 64px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 3px solid var(--dp-color-outline);
+      border-radius: 9999px !important;
+      background: var(--dp-color-panel);
+      box-shadow: 0 6px 0 var(--dp-color-outline);
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1560px; /* Wider card to fill screen horizontally */
+      width: 96%;
+      margin: 16px auto 60px auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .brand-badge:hover {
+      transform: rotate(-6deg) scale(1.05);
+    }
+
+    .brand-title {
+      font-family: var(--dp-typography-display);
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--dp-color-outline);
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--dp-color-ink);
+      opacity: 0.75;
+      font-weight: 600;
+    }
+
+    /* CENTERED PILL TABS */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+      background: var(--dp-color-ground);
+      padding: 4px;
+      border-radius: 9999px;
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+    }
+
+    .nav-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      border: 1.5px solid transparent;
+      background: transparent;
+      color: var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-btn:hover {
+      background: rgba(100, 52, 223, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    .nav-btn.active {
+      background: var(--dp-color-accent);
+      color: #ffffff;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      border-color: var(--dp-color-outline);
+    }
+
+    /* RIGHT ACTIONS (STATUS PILL + CTA BUTTON) */
+    /* THEME TOGGLE BUTTON */
+    .theme-toggle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      background: var(--dp-color-panel);
+      color: var(--dp-color-outline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: rotate(20deg) scale(1.05);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--dp-color-accent-fresh);
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+    }
+
+    .header-cta-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      background: var(--dp-color-accent-warm);
+      color: var(--dp-color-outline);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .header-cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 var(--dp-color-outline);
+    }
+
+    .clear-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      background: #fff;
+      color: #d8004f;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .clear-btn:hover {
+      background: #ffe3eb;
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+    }
+
+    .clear-btn:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0 var(--dp-color-outline);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: #009944;
+      border-radius: 50%;
+      border: 2px solid var(--dp-color-outline);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Viva Injector, Report & XAI Buttons */
+    .inject-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      background: var(--dp-color-accent-warm);
+      color: var(--dp-color-outline);
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .inject-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+    }
+
+    .inject-btn:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0 var(--dp-color-outline);
+    }
+
+    .report-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      background: var(--dp-color-accent-fresh);
+      color: var(--dp-color-outline);
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .report-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+    }
+
+    .xai-inspect-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--dp-color-outline);
+      background: #ffffff;
+      color: var(--dp-color-accent);
+      box-shadow: 1px 1px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .xai-inspect-btn:hover {
+      background: var(--dp-color-accent);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Radar / Chart Card */
+    .chart-card {
+      background: var(--dp-color-panel);
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+    }
+
+    /* Modals System */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(18, 22, 34, 0.68);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes modalFadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .modal-card {
+      background: var(--dp-color-panel);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 24px;
+      box-shadow: 6px 6px 0 var(--dp-color-outline);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px 32px;
+      animation: modalScaleUp 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .modal-card.wide {
+      max-width: 820px;
+    }
+
+    @keyframes modalScaleUp {
+      0% { transform: translateY(14px) scale(0.97); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: 1.5px solid var(--dp-color-outline);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--dp-color-outline);
+      transition: all 0.15s ease;
+    }
+
+    .modal-close:hover {
+      background: #ff7895;
+      color: #fff;
+    }
+
+    .scenario-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .scenario-btn {
+      font-family: var(--dp-typography-display);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: 1.5px solid var(--dp-color-outline);
+      background: var(--dp-color-ground);
+      color: var(--dp-color-outline);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .scenario-btn.active, .scenario-btn:hover {
+      background: var(--dp-color-accent);
+      color: #fff;
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dp-color-outline);
+    }
+
+    .form-input {
+      font-family: var(--dp-typography-reading);
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid var(--dp-color-outline);
+      background: var(--dp-color-panel);
+      color: var(--dp-color-outline);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--dp-color-accent);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn-primary {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: 2px solid var(--dp-color-outline);
+      background: var(--dp-color-accent);
+      color: #ffffff;
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 var(--dp-color-outline);
+    }
+
+    .btn-secondary {
+      font-family: var(--dp-typography-display);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      border: 2px solid var(--dp-color-outline);
+      background: transparent;
+      color: var(--dp-color-outline);
+      cursor: pointer;
+    }
+
+    .xai-meter-track {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 10px 0 16px 0;
+      border: 1.5px solid var(--dp-color-outline);
+      position: relative;
+    }
+
+    .xai-meter-bar {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.4s ease;
+    }
+
+    .xai-factor-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--dp-color-ground);
+      border: 1.5px solid var(--dp-color-outline);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    /* Print styling for Viva Report */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #report-printable-area, #report-printable-area * {
+        visibility: visible !important;
+      }
+      #report-printable-area {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        padding: 30px !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    main {
+      flex: 1;
+      max-width: 1240px;
+      width: 95%;
+      margin: 68px auto 80px auto; /* Generous breathing room between floating pill header and main card */
+      position: relative;
+      z-index: 10;
+    }
+
+    .book-wrapper {
+      position: relative;
+      z-index: 10;
+    }
+
+    .book-backdrop {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: -10px;
+      bottom: -10px;
+      background: var(--dp-color-accent);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 24px;
+      z-index: 1;
+    }
+
+    .book-cover {
+      position: relative;
+      background: var(--dp-color-panel);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 24px;
+      padding: 36px 42px;
+      z-index: 2;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: tabFadeSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes tabFadeSlide {
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.995);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Staggered micro-animations for panels inside active tab */
+    .tab-content.active .hero-split,
+    .tab-content.active .stream-kpis,
+    .tab-content.active .benchmarks-grid,
+    .tab-content.active .kpi-row {
+      animation: subContentRise 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.04s backwards;
+    }
+
+    .tab-content.active .process-grid,
+    .tab-content.active .table-card,
+    .tab-content.active .chart-card,
+    .tab-content.active .matrix-box {
+      animation: subContentRise 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s backwards;
+    }
+
+    @keyframes subContentRise {
+      0% {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--dp-color-accent-warm);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-weight: 700;
+      font-size: var(--dp-typography-metadata);
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+      margin-bottom: 18px;
+    }
+
+    .hero-heading {
+      font-family: var(--dp-typography-display);
+      font-size: 52px;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: var(--dp-color-outline);
+      margin-bottom: 20px;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      margin-bottom: 28px;
+      color: var(--dp-color-ink);
+    }
+
+    .team-badge-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .team-member-pill {
+      background: var(--dp-color-field-soft);
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: var(--dp-typography-metadata);
+    }
+
+    .geometric-stage {
+      background: var(--dp-color-selection);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 6px 6px 0 var(--dp-color-outline);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #f7f5ed;
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 3px 3px 0 var(--dp-color-outline);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .stat-num {
+      font-family: var(--dp-typography-display);
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--dp-color-outline);
+    }
+
+    .stat-lbl {
+      font-size: var(--dp-typography-metadata);
+      font-weight: 600;
+      color: var(--dp-color-ink);
+      opacity: 0.8;
+    }
+
+    .section-title {
+      font-family: var(--dp-typography-display);
+      font-size: 28px;
+      font-weight: 800;
+      margin: 40px 0 20px 0;
+      color: var(--dp-color-outline);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .process-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .process-step {
+      background: var(--dp-color-ground);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 4px 4px 0 var(--dp-color-outline);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--dp-color-accent-warm);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--dp-typography-display);
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .step-title {
+      font-family: var(--dp-typography-display);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .step-body {
+      font-size: var(--dp-typography-metadata);
+      opacity: 0.85;
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: #fcfbf7;
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 4px 4px 0 var(--dp-color-outline);
+    }
+
+    .kpi-val {
+      font-family: var(--dp-typography-display);
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--dp-color-outline);
+      margin-top: 6px;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    /* Threat Status Pill Badges */
+    .threat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-family: var(--dp-typography-display);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      border: 2px solid var(--dp-color-outline);
+      box-shadow: 2px 2px 0 var(--dp-color-outline);
+      white-space: nowrap;
+    }
+
+    .threat-pill.red {
+      background: #ffe3eb;
+      color: #d8004f;
+      border-color: #d8004f;
+    }
+
+    .threat-pill.yellow {
+      background: #fff6db;
+      color: #946800;
+      border-color: #d49a00;
+    }
+
+    .threat-pill.green {
+      background: #e1f7ec;
+      color: #008744;
+      border-color: #009944;
+    }
+
+    [data-theme="dark"] .threat-pill.red {
+      background: #361722;
+      color: #ff6b8b;
+      border-color: #ff6b8b;
+    }
+
+    [data-theme="dark"] .threat-pill.yellow {
+      background: #332712;
+      color: #ffd05b;
+      border-color: #ffd05b;
+    }
+
+    [data-theme="dark"] .threat-pill.green {
+      background: #142e23;
+      color: #9bf1cd;
+      border-color: #9bf1cd;
+    }
+
+    .kpi-tag {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--dp-color-ink);
+      opacity: 0.7;
+    }
+
+    .table-container {
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 18px;
+      overflow-y: auto;
+      max-height: 520px; /* Enable smooth scrolling through all transactions */
+      box-shadow: 5px 5px 0 var(--dp-color-outline);
+      background: #fcfbf7;
+    }
+
+    /* Sticky table header so columns stay visible while scrolling */
+    table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: var(--dp-color-selection);
+      border-bottom: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      padding: 14px 18px;
+      font-family: var(--dp-typography-display);
+      font-size: var(--dp-typography-label);
+      font-weight: 800;
+      color: var(--dp-color-outline);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--dp-color-rule-muted);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--dp-color-field-soft);
+    }
+
+    .badge-fraud {
+      background: #ffe3eb;
+      color: #d8004f;
+      border: 2px solid #d8004f;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-weight: 800;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .badge-suspicious {
+      background: #fff8e1;
+      color: #b78103;
+      border: 2px solid #b78103;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-weight: 800;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .badge-legit {
+      background: #e9fff5;
+      color: #008744;
+      border: 2px solid #008744;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-weight: 800;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .benchmarks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .model-card {
+      background: #fcfbf7;
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 4px 4px 0 var(--dp-color-outline);
+      cursor: pointer;
+      transition: all var(--dp-motion-interaction) ease;
+    }
+
+    .model-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 6px 6px 0 var(--dp-color-outline);
+    }
+
+    .model-card.selected {
+      background: var(--dp-color-selection);
+      border-color: var(--dp-color-accent);
+      box-shadow: 4px 4px 0 var(--dp-color-accent);
+    }
+
+    .model-name {
+      font-family: var(--dp-typography-display);
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .winner-ribbon {
+      background: var(--dp-color-accent-warm);
+      border: var(--dp-border-detail-width) solid var(--dp-color-outline);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .matrix-box {
+      background: var(--dp-color-ground);
+      border: var(--dp-border-outline-width) solid var(--dp-color-outline);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 5px 5px 0 var(--dp-color-outline);
+      margin-top: 24px;
+    }
+
+
+
+    @media (max-width: 900px) {
+      .hero-split { grid-template-columns: 1fr; }
+      .process-strip { grid-template-columns: 1fr 1fr; }
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      header { flex-direction: column; gap: 14px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FULLSCREEN BACKGROUND VIDEO -->
+  <div class="video-bg-container">
+    <video autoplay loop muted playsinline id="bg-video">
+      <source src="/16968-277526315.mp4" type="video/mp4">
+      <source src="/background-video.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- FLOATING PILL HEADER -->
+  <div class="header-wrapper">
+    <header>
+      <div class="brand">
+        <div class="brand-badge">
+          <svg viewBox="0 0 44 44" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="44" height="44" rx="14" fill="#6434df" stroke="#252b3a" stroke-width="2.5"/>
+            <!-- Cyber Shield -->
+            <path d="M22 8L33 13.5V23.5C33 30 27.5 35.5 22 38C16.5 35.5 11 30 11 23.5V13.5L22 8Z" fill="#9bf1cd" stroke="#252b3a" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Spark Lightning Core -->
+            <path d="M23 15L17 24H23L21 32L29 21H23L25 15Z" fill="#ffd05b" stroke="#252b3a" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">VISTA</h1>
+        </div>
+      </div>
+
+      <!-- CENTERED PILL TABS -->
+      <ul class="nav-tabs" role="tablist">
+        <li>
+          <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+            <span>🏠</span> Home
+          </button>
+        </li>
+        <li>
+          <button class="nav-btn" data-tab="live" onclick="switchTab('live')">
+            <span>📡</span> Live Payments
+          </button>
+        </li>
+        <li>
+          <button class="nav-btn" data-tab="radar" onclick="switchTab('radar')">
+            <span>📈</span> Scam Radar
+          </button>
+        </li>
+        <li>
+          <button class="nav-btn" data-tab="benchmark" onclick="switchTab('benchmark')">
+            <span>📊</span> Model Scorecard
+          </button>
+        </li>
+      </ul>
+
+      <!-- RIGHT ACTIONS -->
+      <div class="header-actions">
+        <button id="theme-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          🌙
+        </button>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>AI Scanner Online</span>
+        </div>
+        <button class="header-cta-btn" onclick="switchTab('live')">
+          View Live Payments <span>➔</span>
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <main>
+    <div class="book-wrapper">
+      <div class="book-backdrop"></div>
+      <div class="book-cover">
+
+        <!-- TAB 1: HOME -->
+        <div id="tab-home" class="tab-content active">
+          <div class="hero-split">
+            <div>
+              <span class="hero-tag">Smart AI Bank Security</span>
+              <h2 class="hero-heading">Stopping Card Scams in Less Than 0.1 Seconds</h2>
+              <p class="hero-desc">
+                Every second, millions of card payments happen around the world. Our smart AI system watches every swipe in real time, spots sneaky scam attempts instantly, and freezes suspicious payments before any money is lost.
+              </p>
+              
+              <div class="team-badge-strip">
+                <span class="team-member-pill">👨‍💻 Aman Bhandhari</span>
+                <span class="team-member-pill">👨‍💻 Vaibhvendra Singh</span>
+                <span class="team-member-pill">⚡ Spark AI & Kafka Stream</span>
+              </div>
+            </div>
+
+            <div class="geometric-stage">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: var(--dp-color-accent-fresh);">📊</div>
+                <div>
+                  <div class="stat-num">590,540</div>
+                  <div class="stat-lbl">Real Bank Payments Tested</div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon" style="background: var(--dp-color-accent-secondary); color:#fff;">⚡</div>
+                <div>
+                  <div class="stat-num">97.1%</div>
+                  <div class="stat-lbl">Scam Catching Accuracy</div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon" style="background: var(--dp-color-accent-warm);">🛡️</div>
+                <div>
+                  <div class="stat-num">116,150</div>
+                  <div class="stat-lbl">Live Test Payments Streamed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title"><span>🔄</span> How The AI Catches Scammers (In 4 Simple Steps)</h3>
+          <div class="process-strip">
+            <div class="process-step">
+              <div class="step-number">1</div>
+              <div class="step-title">1. Reading Bank History</div>
+              <div class="step-body">The system studies 500,000+ real payments to learn what normal shopping and scam tricks look like.</div>
+            </div>
+
+            <div class="process-step">
+              <div class="step-number">2</div>
+              <div class="step-title">2. Training 5 Models</div>
+              <div class="step-body">We trained 5 machine learning models and selected the top performer (Gradient-Boosted Trees) to guard live accounts.</div>
+            </div>
+
+            <div class="process-step">
+              <div class="step-number">3</div>
+              <div class="step-title">3. Streaming Live Payments</div>
+              <div class="step-body">A lightning-fast pipeline (Apache Kafka) feeds new card transactions to the AI with zero delay.</div>
+            </div>
+
+            <div class="process-step">
+              <div class="step-number">4</div>
+              <div class="step-title">4. Instant Safety Decision</div>
+              <div class="step-body">In under 0.08 seconds, the AI either approves the swipe, asks for a phone OTP, or blocks the theft.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: LIVE PAYMENTS -->
+        <div id="tab-live" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <span class="hero-tag">Active Guard: Gradient-Boosted AI (97.1% Accurate)</span>
+              <h2 style="font-family:var(--dp-typography-display); font-size:32px; font-weight:800;">Live Bank Card Activity & Scam Blocker</h2>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <button onclick="openInjectorModal()" class="inject-btn" title="Send a fake test payment to see the AI react">
+                <span>⚡</span> Try a Fake Payment (Test AI)
+              </button>
+              <button onclick="clearHistory()" class="clear-btn">
+                <span>🗑️</span> Clear Table & Reset
+              </button>
+              <div style="font-size:14px; font-weight:700;">
+                Scanner Status: <span style="color:#009944;">Watching Swipes</span> ⏱️
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent);">
+              <div class="kpi-tag">Total Payments Checked</div>
+              <div class="kpi-val" id="kpi-scanned">0</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-secondary);">
+              <div class="kpi-tag">Scams Blocked & Stopped</div>
+              <div class="kpi-val" id="kpi-fraud" style="color:#d8004f;">0</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-fresh);">
+              <div class="kpi-tag">Money Saved from Thieves</div>
+              <div class="kpi-val" id="kpi-val">$0</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-warm);">
+              <div class="kpi-tag">Average Danger Level</div>
+              <div class="kpi-val" id="kpi-risk">0.0%</div>
+            </div>
+          </div>
+
+          <h3 class="section-title"><span>📡</span> Live Card Swipes (Checked in Real Time)</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Payment ID</th>
+                  <th>Amount ($)</th>
+                  <th>Card Brand</th>
+                  <th>Payment Source</th>
+                  <th>Real Truth</th>
+                  <th>Danger Score</th>
+                  <th>AI Decision</th>
+                  <th>Why? (Simple Reason)</th>
+                </tr>
+              </thead>
+              <tbody id="live-table-body">
+                <tr>
+                  <td colspan="9" style="text-align:center; padding:30px; opacity:0.6;">
+                    No payments scanned yet. Start <code>python 2_kafka_producer.py</code> or click <strong>Try a Fake Payment (Test AI)</strong> above!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: SCAM RADAR (4TH PAGE) -->
+        <div id="tab-radar" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <span class="hero-tag">Live Danger Level Monitor</span>
+              <h2 style="font-family:var(--dp-typography-display); font-size:32px; font-weight:800; margin:0;">Is The Bank Currently Under Attack?</h2>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="status-pill" style="box-shadow: 2px 2px 0 var(--dp-color-outline);">
+                <span class="status-dot"></span>
+                <span>Watching Last 30 Payments</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- RADAR TELEMETRY CARDS ROW -->
+          <div class="kpi-row" style="margin-bottom: 24px;">
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent);">
+              <div class="kpi-tag">Decision Speed</div>
+              <div class="kpi-val" style="color:var(--dp-color-accent);">&lt; 0.08 sec</div>
+              <div style="font-size:11px; opacity:0.75; margin-top:4px;">Decides instantly before card settles</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-secondary);">
+              <div class="kpi-tag">Current Threat Level</div>
+              <div style="min-height: 42px; display: flex; align-items: center; margin-top: 4px;">
+                <span id="radar-phase" class="threat-pill green">🟢 Normal (Safe)</span>
+              </div>
+              <div id="radar-subtext" style="font-size:11px; opacity:0.75; margin-top:4px;">No major hacking attack detected</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-fresh);">
+              <div class="kpi-tag">Accuracy on Real Scams</div>
+              <div class="kpi-val" style="color:#008744;">96.7%</div>
+              <div style="font-size:11px; opacity:0.75; margin-top:4px;">Hardly ever makes a mistake</div>
+            </div>
+            <div class="kpi-card" style="border-bottom: 6px solid var(--dp-color-accent-warm);">
+              <div class="kpi-tag">Waiting Queue</div>
+              <div class="kpi-val">0 waiting</div>
+              <div style="font-size:11px; opacity:0.75; margin-top:4px;">Zero backlog, zero delays</div>
+            </div>
+          </div>
+
+          <!-- EXPANDED HIGH-RES RADAR CHART CARD -->
+          <div class="chart-card" style="padding: 24px 28px; margin-bottom: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-family:var(--dp-typography-display); font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px; margin:0 0 4px 0;">
+                  <span>📈</span> Live Scam Danger Level (Higher Spikes = Bigger Danger)
+                </h3>
+                <div style="font-size:13px; opacity:0.8;">Watch the line bounce into the red zone when someone tries to swipe a stolen card</div>
+              </div>
+              <div style="display:flex; gap:16px; font-size:12px; font-weight:700; flex-wrap:wrap;">
+                <span style="color:#6434df; display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:12px; height:12px; background:#6434df; border-radius:50%;"></span> Danger Level %</span>
+                <span style="color:#00b875; display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:12px; height:12px; background:#00b875; border-radius:50%;"></span> Safe (&lt;9.0%)</span>
+                <span style="color:#e5a100; display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:12px; height:12px; background:#e5a100; border-radius:50%;"></span> Needs Phone OTP (9%-14.9%)</span>
+                <span style="color:#d8004f; display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:12px; height:12px; background:#d8004f; border-radius:50%;"></span> Block & Freeze (≥15%)</span>
+              </div>
+            </div>
+            <div style="position:relative; height:240px; width:100%;">
+              <canvas id="live-trend-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- RADAR ARCHITECTURE & ANALYTICS DETAILS -->
+          <div class="hero-split" style="gap:24px;">
+            <div class="matrix-box" style="margin:0;">
+              <h4 style="font-family:var(--dp-typography-display); font-size:17px; font-weight:800; margin-bottom:8px;">
+                🛡️ What The 3 Safety Zones Mean
+              </h4>
+              <p style="font-size:13px; opacity:0.85; margin-bottom:14px;">
+                Real-world bank scams only happen in about 3 out of every 100 payments. That is why our AI uses a smart 3-step traffic light system instead of a simple yes-or-no guess:
+              </p>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="padding:10px 14px; border-radius:10px; border-left:4px solid #009944; background:var(--dp-color-ground);">
+                  <strong style="color:#009944;">🟢 Under 9% — Green (Safe Purchase)</strong>
+                  <div style="font-size:12px; opacity:0.8;">Normal coffee, groceries, or shopping. Cleared in 0.05 seconds with zero hassle.</div>
+                </div>
+                <div style="padding:10px 14px; border-radius:10px; border-left:4px solid #e5a100; background:var(--dp-color-ground);">
+                  <strong style="color:#e5a100;">🟡 9% to 14.9% — Amber (Needs Phone Code)</strong>
+                  <div style="font-size:12px; opacity:0.8;">Higher amount or fast swipes. Bank texts a 6-digit OTP code to the owner's phone to double check.</div>
+                </div>
+                <div style="padding:10px 14px; border-radius:10px; border-left:4px solid #d8004f; background:var(--dp-color-ground);">
+                  <strong style="color:#d8004f;">🔴 15% and Up — Red (Scam Blocked!)</strong>
+                  <div style="font-size:12px; opacity:0.8;">Obvious hacker bot or stolen card. Card is frozen immediately to save the money.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="matrix-box" style="margin:0;">
+              <h4 style="font-family:var(--dp-typography-display); font-size:17px; font-weight:800; margin-bottom:8px;">
+                ⚙️ How The Technology Protects You
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between; padding-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.08);">
+                  <span>High-Speed Message Tube:</span>
+                  <strong>Apache Kafka (delivers payments with 0 lag)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.08);">
+                  <span>Top Model:</span>
+                  <strong>Gradient-Boosted Trees (our top performer)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.08);">
+                  <span>Sliding Memory Window:</span>
+                  <strong>Watches the last 30 swipes together</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.08);">
+                  <span>Thinking Time per Swipe:</span>
+                  <strong>Takes only 0.06 seconds</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span>Plain-English Reasons:</span>
+                  <strong>Explains the exact clues in simple words</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: MODEL SCORECARD -->
+        <div id="tab-benchmark" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <span class="hero-tag">Model Comparison</span>
+              <h2 style="font-family:var(--dp-typography-display); font-size:32px; font-weight:800; margin:0;">Model Performance Comparison</h2>
+            </div>
+            <button onclick="openReportModal()" class="report-btn">
+              <span>📄</span> Print Simple Summary Report
+            </button>
+          </div>
+
+          <p style="font-size:14px; opacity:0.85; margin-bottom:20px;">
+            We tested 5 different models on 500,000 real bank transactions to find the one that catches the most scams without annoying honest customers. Click any card below to see its detailed test score!
+          </p>
+
+          <div class="benchmarks-grid" id="models-list"></div>
+
+          <div class="matrix-box" id="model-details-box">
+            <h3 style="font-family:var(--dp-typography-display); font-size:22px; font-weight:800;" id="detail-model-title">
+              Selected Model Report Card
+            </h3>
+            <p style="font-size:14px; opacity:0.8; margin-bottom:18px;">
+              Tested against 116,000 real unseen bank payments from the official IEEE-CIS banking dataset.
+            </p>
+
+            <div class="kpi-row" style="margin-bottom: 20px;">
+              <div class="kpi-card">
+                <div class="kpi-tag">Overall Accuracy</div>
+                <div class="kpi-val" id="detail-acc">0%</div>
+                <div style="font-size:11px; opacity:0.75; margin-top:4px;">How often it makes the right call</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-tag">Accuracy on Scams</div>
+                <div class="kpi-val" id="detail-prec">0%</div>
+                <div style="font-size:11px; opacity:0.75; margin-top:4px;">When it flags a scam, it is right this often</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-tag">Scams Caught</div>
+                <div class="kpi-val" id="detail-rec">0%</div>
+                <div style="font-size:11px; opacity:0.75; margin-top:4px;">Percentage of total scams intercepted</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-tag">Scam Detection Rating</div>
+                <div class="kpi-val" id="detail-auc" style="color:var(--dp-color-accent);">0.0</div>
+                <div style="font-size:11px; opacity:0.75; margin-top:4px;">Higher is better (Maximum 1.0)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL 1: LIVE VIVA TRANSACTION INJECTOR -->
+  <div id="injector-modal" class="modal-overlay" onclick="closeOnBackdrop(event, 'injector-modal')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="hero-tag" style="margin-bottom:6px;">Payment Simulator</span>
+          <h3 style="font-family:var(--dp-typography-display); font-size:22px; font-weight:800; margin:0;">⚡ Test The AI With A Fake Payment</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('injector-modal')">✕</button>
+      </div>
+      <p style="font-size:13px; opacity:0.8; margin-bottom:16px;">
+        Pick a fake test payment below or type your own amounts to see the AI make a live decision in under 0.1 seconds!
+      </p>
+
+      <div class="scenario-pills">
+        <button type="button" class="scenario-btn active" id="preset-bot" onclick="setPreset('bot_attack')">🚨 Hacker Bot Attack ($4,200, 95 Swipes)</button>
+        <button type="button" class="scenario-btn" id="preset-suspicious" onclick="setPreset('suspicious')">⚠️ Unusual Payment ($850, Needs OTP)</button>
+        <button type="button" class="scenario-btn" id="preset-legit" onclick="setPreset('legit')">✅ Normal Grocery ($45, Safe)</button>
+      </div>
+
+      <form id="injector-form" onsubmit="submitCustomTxn(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Payment Amount ($ USD)</label>
+            <input type="number" step="0.01" id="inject-amt" class="form-input" value="4200.00" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Brand</label>
+            <select id="inject-card" class="form-input">
+              <option value="visa">Visa</option>
+              <option value="mastercard">MasterCard</option>
+              <option value="discover" selected>Discover (Higher Risk History)</option>
+              <option value="american express">American Express</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Swipes per minute (Humans do 1, bots do 50+)</label>
+            <input type="number" id="inject-c1" class="form-input" value="95" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store / Transfer Channel</label>
+            <select id="inject-product" class="form-input">
+              <option value="C" selected>Category C (Online Wire Transfer / High Risk)</option>
+              <option value="W">Category W (Normal Web Shopping)</option>
+              <option value="H">Category H (Hotel & Travel Booking)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal('injector-modal')">Cancel</button>
+          <button type="submit" class="btn-primary" id="inject-submit-btn">
+            <span>🔥</span> Send Payment To The AI
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: EXPLAINABILITY / XAI RISK ANALYSIS DRAWER -->
+  <div id="xai-modal" class="modal-overlay" onclick="closeOnBackdrop(event, 'xai-modal')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="hero-tag" style="margin-bottom:6px;">Plain-English AI Inspector</span>
+          <h3 style="font-family:var(--dp-typography-display); font-size:22px; font-weight:800; margin:0;" id="xai-title">
+            💡 Why Did The AI Make This Decision?
+          </h3>
+          <p style="font-size:13px; opacity:0.8; margin-top:4px; margin-bottom:0;">
+            A simple, everyday explanation showing the exact clues the computer found.
+          </p>
+        </div>
+        <button class="modal-close" onclick="closeModal('xai-modal')">✕</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-size:12px; opacity:0.75;">Transaction ID</div>
+          <div style="font-size:18px; font-weight:800;" id="xai-txn-id">#9920145</div>
+        </div>
+        <div>
+          <div style="font-size:12px; opacity:0.75;">Amount & Card Brand</div>
+          <div style="font-size:18px; font-weight:800;" id="xai-amount-card">$4,200.00 • Discover</div>
+        </div>
+        <div>
+          <div style="font-size:12px; opacity:0.75;">Bank Decision</div>
+          <div id="xai-status-badge">🚨 BLOCKED FRAUD</div>
+        </div>
+      </div>
+
+      <div style="margin: 16px 0;">
+        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; flex-wrap:wrap; gap:6px;">
+          <span>Scam Risk Score: <strong id="xai-risk-score" style="color:var(--dp-color-accent);">24.8%</strong></span>
+          <span style="font-size:11px; opacity:0.75;">Safe: &lt;9% 😊 | OTP: 9%-14.9% 📱 | Scam Block: &ge;15% 🚨</span>
+        </div>
+        <div class="xai-meter-track">
+          <div id="xai-meter-bar" class="xai-meter-bar" style="width: 60%; background: #d8004f;"></div>
+        </div>
+      </div>
+
+      <h4 style="font-family:var(--dp-typography-display); font-size:15px; font-weight:800; margin-bottom:10px;">
+        🔍 Warning Signs & Clues Found in this Payment:
+      </h4>
+      <div id="xai-factors-list" style="margin-bottom: 18px;">
+        <!-- Dynamically injected in plain English -->
+      </div>
+
+      <div style="padding:14px; border-radius:14px; background:var(--dp-color-ground); border:1.5px solid var(--dp-color-outline); margin-bottom:16px;">
+        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; color:var(--dp-color-accent);" id="xai-protocol-tag">
+          🛡️ What The Bank Did Right Now:
+        </div>
+        <div style="font-size:13px; line-height:1.55;" id="xai-action-text">
+          Stopped the payment instantly. No money was taken.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-primary" onclick="closeModal('xai-modal')">Got it! Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: ONE-CLICK SUMMARY REPORT / PRINTABLE DOSSIER -->
+  <div id="report-modal" class="modal-overlay" onclick="closeOnBackdrop(event, 'report-modal')">
+    <div class="modal-card wide">
+      <div class="modal-header no-print">
+        <div>
+          <span class="hero-tag" style="margin-bottom:6px;">Simple Summary Report</span>
+          <h3 style="font-family:var(--dp-typography-display); font-size:22px; font-weight:800; margin:0;">
+            📄 VISTA: Project Summary & Test Report
+          </h3>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+          <button class="modal-close" onclick="closeModal('report-modal')">✕</button>
+        </div>
+      </div>
+
+      <!-- PRINTABLE CONTENT CONTAINER -->
+      <div id="report-printable-area" style="font-family: 'Instrument Sans', sans-serif;">
+        <div style="border-bottom: 2px solid var(--dp-color-outline); padding-bottom: 16px; margin-bottom: 20px;">
+          <h1 style="font-family: 'Host Grotesk', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 4px;">
+            VISTA: Real-Time AI Bank Card Scam Detection System
+          </h1>
+          <div style="font-size: 14px; opacity: 0.85; margin-bottom: 12px;">
+            Real-Time Big Data Stream Processing Architecture
+          </div>
+          <div style="display:flex; gap: 24px; font-size: 13px;">
+            <div><strong>Author:</strong> Aman Bhandhari</div>
+            <div><strong>Author:</strong> Vaibhvendra Singh</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-family: 'Host Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 6px;">
+            1. What This Project Does (In Plain English)
+          </h3>
+          <p style="font-size: 13px; line-height: 1.6; opacity: 0.9;">
+            This project uses Artificial Intelligence to catch credit and debit card scammers in real time. We tested our system on <strong>590,540 real bank transactions</strong> (from the official IEEE-CIS fraud dataset). Because card scams happen in only about 3 out of every 100 payments, the AI evaluates every swipe in less than <strong>0.08 seconds</strong>, making sure thieves are caught without disturbing real shoppers.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-family: 'Host Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 6px;">
+            2. How The Technology Protects Money (Step-by-Step)
+          </h3>
+          <div style="font-size: 13px; line-height: 1.6; opacity: 0.9;">
+            <ul>
+              <li><strong>Learning from Real Bank Records:</strong> The AI studied 474,390 historical bank payments to learn the difference between genuine grocery shopping and scam bot attacks.</li>
+              <li><strong>Live Highway Tube (Apache Kafka):</strong> Feeds swiped payments straight into the AI with zero lag.</li>
+              <li><strong>Trained Model (PySpark MLlib):</strong> Our top model (Gradient-Boosted Trees) scores the danger level in under 0.08 seconds.</li>
+              <li><strong>Plain-English Reasons (XAI):</strong> Explains in simple everyday English why a card was approved, challenged with an OTP, or blocked.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-family: 'Host Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 8px;">
+            3. Model Scorecard (Comparing 5 Different Models)
+          </h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--dp-color-outline); background: rgba(0,0,0,0.05); text-align: left;">
+                <th style="padding: 8px;">AI Algorithm</th>
+                <th style="padding: 8px;">Scam Detection Score</th>
+                <th style="padding: 8px;">Overall Accuracy</th>
+                <th style="padding: 8px;">Accuracy on Scams</th>
+                <th style="padding: 8px;">Scams Intercepted</th>
+                <th style="padding: 8px;">Final Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(0,0,0,0.1); font-weight: 700; background: rgba(100,52,223,0.08);">
+                <td style="padding: 8px;">🏆 Gradient-Boosted Trees (GBT)</td>
+                <td style="padding: 8px; color: #6434df;">0.8407 (Top)</td>
+                <td style="padding: 8px;">97.13%</td>
+                <td style="padding: 8px;">96.69%</td>
+                <td style="padding: 8px;">97.13%</td>
+                <td style="padding: 8px;">Selected Winner (Smartest)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <td style="padding: 8px;">Random Forest</td>
+                <td style="padding: 8px;">0.8397</td>
+                <td style="padding: 8px;">97.10%</td>
+                <td style="padding: 8px;">96.60%</td>
+                <td style="padding: 8px;">97.10%</td>
+                <td style="padding: 8px;">Close Runner-Up</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <td style="padding: 8px;">Logistic Regression</td>
+                <td style="padding: 8px;">0.7418</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">Basic Math Baseline</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <td style="padding: 8px;">Linear Support Vector Machine (SVM)</td>
+                <td style="padding: 8px;">0.6678</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">96.50%</td>
+                <td style="padding: 8px;">Average Performer</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px;">Decision Tree</td>
+                <td style="padding: 8px;">0.3989</td>
+                <td style="padding: 8px;">97.10%</td>
+                <td style="padding: 8px;">96.60%</td>
+                <td style="padding: 8px;">97.10%</td>
+                <td style="padding: 8px;">Simple Single Tree</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3 style="font-family: 'Host Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 6px;">
+            4. The 3-Tier Traffic Light Security System
+          </h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 12px;">
+            <div style="border: 1px solid #009944; border-radius: 8px; padding: 10px;">
+              <strong style="color:#009944;">🟢 1. Safe Purchase (Under 9%)</strong>
+              <p style="margin-top: 4px; opacity:0.85;">Approved instantly. 96.5% of honest shoppers pass through with zero delay.</p>
+            </div>
+            <div style="border: 1px solid #e5a100; border-radius: 8px; padding: 10px;">
+              <strong style="color:#e5a100;">🟡 2. Verify with Phone (9% - 14.9%)</strong>
+              <p style="margin-top: 4px; opacity:0.85;">Bank texts a secret 6-digit OTP code to the owner's mobile phone to verify.</p>
+            </div>
+            <div style="border: 1px solid #d8004f; border-radius: 8px; padding: 10px;">
+              <strong style="color:#d8004f;">🔴 3. Scam Blocked (15% and Up)</strong>
+              <p style="margin-top: 4px; opacity:0.85;">Stopped instantly. The card is frozen to save the owner's money from thieves.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer no-print">
+        <button type="button" class="btn-secondary" onclick="closeModal('report-modal')">Close</button>
+        <button type="button" class="btn-primary" onclick="window.print()">
+          <span>🖨️</span> Print Simple Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    let benchmarksData = {};
+
+    function switchTab(tabName) {
+      if (!tabName) tabName = 'home';
+      
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const targetTab = document.getElementById('tab-' + tabName);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+
+      // Highlight corresponding tab button in header
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabName) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Persist active tab in URL hash and localStorage
+      try {
+        window.location.hash = tabName;
+        localStorage.setItem('active_tab', tabName);
+      } catch (e) {}
+
+      // If switching to Risk Radar, trigger chart resize so canvas fills correctly
+      if (tabName === 'radar') {
+        setTimeout(() => {
+          if (!trendChart) initTrendChart();
+          if (trendChart) {
+            trendChart.resize();
+            trendChart.update();
+          }
+        }, 60);
+      }
+    }
+
+    // Theme Toggle Logic
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const btn = document.getElementById('theme-btn');
+      if (btn) {
+        btn.innerText = theme === 'dark' ? '☀️' : '🌙';
+      }
+    }
+
+    // Immediately restore tab and theme upon script execution
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      const savedTab = window.location.hash.replace('#', '') || localStorage.getItem('active_tab') || 'home';
+      switchTab(savedTab);
+    });
+
+    async function loadBenchmarks() {
+      try {
+        const res = await fetch('/api/benchmarks');
+        benchmarksData = await res.json();
+        
+        const container = document.getElementById('models-list');
+        container.innerHTML = '';
+        
+        for (const [name, data] of Object.entries(benchmarksData)) {
+          const isWinner = name.includes('Gradient-Boosted');
+          
+          const card = document.createElement('div');
+          card.className = `model-card ${isWinner ? 'selected' : ''}`;
+          card.onclick = () => selectModel(name);
+          card.innerHTML = `
+            ${isWinner ? '<span class="winner-ribbon">🏆 SMARTEST WINNER</span>' : ''}
+            <div class="model-name">${name}</div>
+            <div style="font-size:13px; margin-bottom:8px;">Overall Accuracy: <strong>${(data.Accuracy * 100).toFixed(1)}%</strong></div>
+            <div style="font-size:13px;">Scam Catch Score: <strong style="color:var(--dp-color-accent);">${data.ROC_AUC.toFixed(4)}</strong></div>
+          `;
+          container.appendChild(card);
+        }
+
+        selectModel("Gradient-Boosted Trees (GBT)");
+      } catch (err) {
+        console.error("Failed loading benchmarks:", err);
+      }
+    }
+
+    function selectModel(name) {
+      document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.model-card').forEach(c => {
+        if (c.innerText.includes(name)) c.classList.add('selected');
+      });
+
+      const m = benchmarksData[name];
+      if (!m) return;
+
+      document.getElementById('detail-model-title').innerText = `${name} Report Card`;
+      document.getElementById('detail-acc').innerText = `${(m.Accuracy * 100).toFixed(2)}%`;
+      document.getElementById('detail-prec').innerText = `${(m.Precision * 100).toFixed(2)}%`;
+      document.getElementById('detail-rec').innerText = `${(m.Recall * 100).toFixed(2)}%`;
+      document.getElementById('detail-auc').innerText = m.ROC_AUC.toFixed(4);
+    }
+
+    let currentTxLogs = [];
+    let trendChart = null;
+    const MAX_CHART_POINTS = 30;
+
+    function initTrendChart() {
+      const ctx = document.getElementById('live-trend-chart');
+      if (!ctx || trendChart) return;
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const gridColor = isDark ? '#2a3243' : '#e2e8f0';
+      const textColor = isDark ? '#c5d0e3' : '#64748b';
+
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'Scam Danger Level (%)',
+              data: [],
+              borderColor: '#6434df',
+              backgroundColor: isDark ? 'rgba(100, 52, 223, 0.22)' : 'rgba(100, 52, 223, 0.09)',
+              fill: true,
+              tension: 0.38,
+              borderWidth: 2.5,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: '#ff78c5',
+              pointBorderColor: '#6434df',
+              pointBorderWidth: 1.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 250 },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` Risk: ${ctx.parsed.y.toFixed(1)}%`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { size: 10 } }
+            },
+            y: {
+              min: 0,
+              max: 45,
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                font: { size: 10 },
+                callback: (val) => `${val}%`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChartData(list) {
+      if (!trendChart) initTrendChart();
+      if (!trendChart || !list || list.length === 0) return;
+
+      const recent = list.slice(-MAX_CHART_POINTS);
+      trendChart.data.labels = recent.map(x => `#${x.TransactionID.toString().slice(-4)}`);
+      trendChart.data.datasets[0].data = recent.map(x => (parseFloat(x.RiskProbability || 0) * 100));
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      trendChart.options.scales.x.grid.color = isDark ? '#2a3243' : '#e2e8f0';
+      trendChart.options.scales.x.ticks.color = isDark ? '#c5d0e3' : '#64748b';
+      trendChart.options.scales.y.grid.color = isDark ? '#2a3243' : '#e2e8f0';
+      trendChart.options.scales.y.ticks.color = isDark ? '#c5d0e3' : '#64748b';
+
+      trendChart.update();
+    }
+
+    async function updateLiveFeed() {
+      try {
+        const res = await fetch('/api/live_feed');
+        const list = await res.json();
+        
+        if (!list || list.length === 0) return;
+        currentTxLogs = list;
+
+        const total = list.length;
+        const frauds = list.filter(x => x.Status === 'BLOCKED' || x.Status === 'SUSPICIOUS' || x.Status === 'FRAUD');
+        const fraudCount = frauds.length;
+        const valueSaved = frauds.reduce((sum, x) => sum + (parseFloat(x.TransactionAmt) || 0), 0);
+        const avgRisk = list.reduce((sum, x) => sum + (parseFloat(x.RiskProbability) || 0), 0) / (total || 1);
+
+        document.getElementById('kpi-scanned').innerText = total.toLocaleString();
+        document.getElementById('kpi-fraud').innerText = fraudCount.toLocaleString();
+        document.getElementById('kpi-val').innerText = `$${valueSaved.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('kpi-risk').innerText = `${(avgRisk * 100).toFixed(1)}%`;
+
+        const phaseEl = document.getElementById('radar-phase');
+        const subtextEl = document.getElementById('radar-subtext');
+        if (phaseEl) {
+          if (avgRisk >= 0.15) {
+            phaseEl.className = 'threat-pill red';
+            phaseEl.innerText = '🚨 Scam Attack!';
+            if (subtextEl) subtextEl.innerText = 'High-velocity scam wave intercepted';
+          } else if (avgRisk >= 0.09) {
+            phaseEl.className = 'threat-pill yellow';
+            phaseEl.innerText = '⚠️ Elevated Risk';
+            if (subtextEl) subtextEl.innerText = 'Payments challenged with OTP';
+          } else {
+            phaseEl.className = 'threat-pill green';
+            phaseEl.innerText = '🟢 Normal (Safe)';
+            if (subtextEl) subtextEl.innerText = 'No major hacking attack detected';
+          }
+        }
+
+        updateChartData(list);
+
+        const tbody = document.getElementById('live-table-body');
+        tbody.innerHTML = '';
+        
+        // Show recent transactions with newest first
+        const recent = [...list].reverse().slice(0, 150);
+        recent.forEach(tx => {
+          const isActualFraud = tx.TrueLabel === 'FRAUD';
+          
+          let badgeHtml = '';
+          if (tx.Status === 'BLOCKED') {
+            badgeHtml = '<span class="badge-fraud">🚨 SCAM BLOCKED</span>';
+          } else if (tx.Status === 'SUSPICIOUS') {
+            badgeHtml = '<span class="badge-suspicious">⚠️ ON HOLD (NEEDS OTP)</span>';
+          } else {
+            badgeHtml = '<span class="badge-legit">✅ SAFE & APPROVED</span>';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${tx.Timestamp || 'Just now'}</td>
+            <td><strong>#${tx.TransactionID}</strong></td>
+            <td>$${parseFloat(tx.TransactionAmt).toFixed(2)}</td>
+            <td>${tx.Card || 'Visa'}</td>
+            <td><span style="font-size:11px; opacity:0.8;">${tx.Source || 'Stream'}</span></td>
+            <td>
+              <span style="font-size:12px; font-weight:700; color:${isActualFraud ? '#d8004f' : '#008744'};">
+                ${isActualFraud ? '🚨 Real Scam' : '✅ Genuine'}
+              </span>
+            </td>
+            <td><strong>${(parseFloat(tx.RiskProbability || 0) * 100).toFixed(1)}%</strong></td>
+            <td>${badgeHtml}</td>
+            <td>
+              <button class="xai-inspect-btn" onclick="openXaiModal('${tx.TransactionID}')">
+                🔍 Why?
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error("Error updating live feed:", err);
+      }
+    }
+
+    async function clearHistory() {
+      if (!confirm("Are you sure you want to clear old transaction logs and reset all counters?")) return;
+      try {
+        await fetch('/api/clear_feed', { method: 'POST' });
+        currentTxLogs = [];
+        document.getElementById('live-table-body').innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align:center; padding:30px; opacity:0.6;">
+              All payments cleared. Waiting for new card swipes or click <strong>Try a Fake Payment (Test AI)</strong> above!
+            </td>
+          </tr>
+        `;
+        document.getElementById('kpi-scanned').innerText = '0';
+        document.getElementById('kpi-fraud').innerText = '0';
+        document.getElementById('kpi-val').innerText = '$0.00';
+        document.getElementById('kpi-risk').innerText = '0.0%';
+
+        const phaseEl = document.getElementById('radar-phase');
+        if (phaseEl) {
+          phaseEl.className = 'threat-pill green';
+          phaseEl.innerText = '🟢 Normal (Safe)';
+        }
+        const subtextEl = document.getElementById('radar-subtext');
+        if (subtextEl) subtextEl.innerText = 'No major hacking attack detected';
+
+        if (trendChart) {
+          trendChart.data.labels = [];
+          trendChart.data.datasets[0].data = [];
+          trendChart.update();
+        }
+      } catch (err) {
+        console.error("Failed to clear feed:", err);
+      }
+    }
+
+    // Modal Control Functions
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.remove('active');
+    }
+
+    function closeOnBackdrop(event, modalId) {
+      if (event.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    // Feature 1: Viva Injector Modal Logic
+    function openInjectorModal() {
+      openModal('injector-modal');
+    }
+
+    function setPreset(type) {
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      
+      const amtInput = document.getElementById('inject-amt');
+      const cardInput = document.getElementById('inject-card');
+      const c1Input = document.getElementById('inject-c1');
+      const prodInput = document.getElementById('inject-product');
+
+      if (type === 'bot_attack') {
+        document.getElementById('preset-bot').classList.add('active');
+        amtInput.value = '4200.00';
+        cardInput.value = 'discover';
+        c1Input.value = '95';
+        prodInput.value = 'C';
+      } else if (type === 'suspicious') {
+        document.getElementById('preset-suspicious').classList.add('active');
+        amtInput.value = '850.00';
+        cardInput.value = 'visa';
+        c1Input.value = '14';
+        prodInput.value = 'W';
+      } else if (type === 'legit') {
+        document.getElementById('preset-legit').classList.add('active');
+        amtInput.value = '45.00';
+        cardInput.value = 'visa';
+        c1Input.value = '1';
+        prodInput.value = 'W';
+      }
+    }
+
+    async function submitCustomTxn(event) {
+      event.preventDefault();
+      const btn = document.getElementById('inject-submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Checking with AI Scanner...';
+
+      const payload = {
+        TransactionAmt: parseFloat(document.getElementById('inject-amt').value) || 2500.0,
+        card4: document.getElementById('inject-card').value,
+        C1: parseFloat(document.getElementById('inject-c1').value) || 1.0,
+        ProductCD: document.getElementById('inject-product').value,
+        scenario: document.getElementById('inject-c1').value >= 50 ? 'bot_attack' : 'custom'
+      };
+
+      try {
+        const res = await fetch('/api/inject_transaction', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        closeModal('injector-modal');
+        switchTab('live');
+        await updateLiveFeed();
+      } catch (e) {
+        alert("Failed to inject custom transaction: " + e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔥</span> Send Payment To The AI';
+      }
+    }
+
+    // Feature 3: XAI Explainability Modal Logic
+    function openXaiModal(txnId) {
+      const tx = currentTxLogs.find(x => x.TransactionID.toString() === txnId.toString());
+      if (!tx) return;
+
+      document.getElementById('xai-txn-id').innerText = `#${tx.TransactionID}`;
+      document.getElementById('xai-amount-card').innerText = `$${parseFloat(tx.TransactionAmt).toFixed(2)} • ${tx.Card || 'Card'}`;
+
+      const riskPct = (parseFloat(tx.RiskProbability || 0) * 100).toFixed(1);
+      document.getElementById('xai-risk-score').innerText = `${riskPct}%`;
+
+      const bar = document.getElementById('xai-meter-bar');
+      const badge = document.getElementById('xai-status-badge');
+      const actionText = document.getElementById('xai-action-text');
+
+      bar.style.width = `${Math.min(parseFloat(riskPct) * 2.5, 100)}%`;
+
+      if (tx.Status === 'BLOCKED') {
+        bar.style.background = '#d8004f';
+        badge.className = 'badge-fraud';
+        badge.innerText = '🚨 SCAM BLOCKED!';
+        actionText.innerHTML = '<strong>🛑 STOPPED INSTANTLY:</strong> The money was NOT sent. The bank immediately blocked this payment and froze the card to protect the owner. An SMS alert was sent asking: <em>"Did you just try to spend this money?"</em>';
+      } else if (tx.Status === 'SUSPICIOUS') {
+        bar.style.background = '#ffd05b';
+        badge.className = 'badge-suspicious';
+        badge.innerText = '⚠️ ON HOLD (WAITING FOR OTP)';
+        actionText.innerHTML = '<strong>📱 TEMPORARY PAUSE:</strong> The payment looks a little unusual, so the bank paused it for 60 seconds. A secret 6-digit verification code was texted to the owner’s mobile phone. If they type it in, the payment goes through.';
+      } else {
+        bar.style.background = '#009944';
+        badge.className = 'badge-legit';
+        badge.innerText = '✅ SAFE & APPROVED';
+        actionText.innerHTML = '<strong>⚡ 100% GENUINE:</strong> Everything looks like a completely normal, honest purchase. The payment was cleared in under 0.1 seconds without bothering the customer.';
+      }
+
+      // Populate Risk Attribution Drivers in simple English
+      const factorsList = document.getElementById('xai-factors-list');
+      factorsList.innerHTML = '';
+      const factors = tx.RiskFactors || [];
+      if (factors.length === 0) {
+        factorsList.innerHTML = '<div class="xai-factor-item"><span>✅</span> Everything looks totally normal and genuine.</div>';
+      } else {
+        factors.forEach(f => {
+          let icon = '⚡';
+          if (f.includes('Huge') || f.includes('Amount') || f.includes('Price') || f.includes('Money')) icon = '💰';
+          else if (f.includes('Bot') || f.includes('Speed') || f.includes('Robot') || f.includes('Swipes')) icon = '🤖';
+          else if (f.includes('Wire') || f.includes('Transfer') || f.includes('Store') || f.includes('Category')) icon = '🛒';
+          else if (f.includes('Card') || f.includes('Network') || f.includes('Unfamiliar')) icon = '💳';
+          else if (f.includes('Model') || f.includes('Verdict') || f.includes('Brain') || f.includes('AI')) icon = '🤖';
+
+          const div = document.createElement('div');
+          div.className = 'xai-factor-item';
+          div.innerHTML = `<span style="font-size:18px;">${icon}</span> <div style="line-height:1.45;">${f}</div>`;
+          factorsList.appendChild(div);
+        });
+      }
+
+      openModal('xai-modal');
+    }
+
+    // Feature 6: Report Modal Logic
+    function openReportModal() {
+      openModal('report-modal');
+    }
+
+    // Initialize Page
+    const savedTab = window.location.hash.replace('#', '') || localStorage.getItem('active_tab') || 'home';
+    switchTab(savedTab);
+
+    initTrendChart();
+    loadBenchmarks();
+    setInterval(updateLiveFeed, 1500);
+    updateLiveFeed();
+  </script>
+</body>
+</html>

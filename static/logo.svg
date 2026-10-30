@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%">
+  <!-- Background Badge -->
+  <rect x="2" y="2" width="44" height="44" rx="14" fill="#6434df" stroke="#252b3a" stroke-width="3" />
+  
+  <!-- Outer Shield Outline -->
+  <path d="M24 7 L37 13 V25 C37 32 30 38 24 41 C18 38 11 32 11 25 V13 Z" 
+        fill="#9bf1cd" 
+        stroke="#252b3a" 
+        stroke-width="2.5" 
+        stroke-linejoin="round" />
+  
+  <!-- Inner Shield Fill -->
+  <path d="M24 10 L34 15 V24 C34 29.5 28.5 35 24 37.5 C19.5 35 14 29.5 14 24 V15 Z" 
+        fill="#ffffff" 
+        stroke="#252b3a" 
+        stroke-width="1.8" 
+        stroke-linejoin="round" />
+        
+  <!-- Big Data Lightning Bolt / Spark Nodes -->
+  <path d="M25 14 L18 24 H24 L22 34 L31 22 H24 Z" 
+        fill="#ffd05b" 
+        stroke="#252b3a" 
+        stroke-width="2" 
+        stroke-linejoin="round" />
+</svg>
+

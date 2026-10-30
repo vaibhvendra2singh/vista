@@ -1,0 +1,65 @@
+================================================================================
+            VISTA - BIG DATA FINANCIAL FRAUD DETECTION SYSTEM
+================================================================================
+
+================================================================================
+SINGLE-COMMAND RUN (RECOMMENDED FOR DAILY USE)
+================================================================================
+Run this single command in your terminal:
+
+./run_all.sh
+
+What it does automatically:
+1. Checks & starts Apache Kafka on port 9092.
+2. Checks model training (uses the saved 5-model GBT classifier).
+3. Launches the Web Dashboard at http://localhost:5050 in the background.
+4. Automatically opens http://localhost:5050 in your web browser.
+5. Launches the PySpark ML streaming engine in the background.
+6. Opens the interactive streaming menu directly in your current terminal:
+     [1] Stream 20% unseen test data (from dataset)
+     [2] Continuous random generator (High-Fraud Attacks: ~40%)
+     [3] Inject a single custom scam payment (instant test)
+7. Press Ctrl+C anytime to stop all background processes cleanly.
+
+================================================================================
+TWO-TERMINAL SETUP (FOR LIVE DUAL-MONITOR DEMO)
+================================================================================
+Use this mode when you want to show two side-by-side terminal windows
+(one sending payments, one displaying PySpark ML alerts):
+
+TERMINAL 1 (The Backend & Live Spark Engine):
+    cd /path/to/vista
+    source venv/bin/activate
+    python run_terminal1.py
+    * Select Option [2] or [3]. Opens the browser and starts the Spark ML engine.
+
+TERMINAL 2 (The Real-Time Streamer):
+    cd /path/to/vista
+    source venv/bin/activate
+    python 2_kafka_producer.py
+    * Select [1], [2], or [3] to stream payments live.
+================================================================================
+
+================================================================================
+DASHBOARD INTERACTIVE FEATURES (http://localhost:5050)
+================================================================================
+1. ⚡ LIVE TRANSACTION INJECTOR (In-Browser):
+   Click "⚡ Test Transaction Injector" on the Live Stream tab to fire custom payments
+   directly into Kafka. Try presets:
+   - 🚨 Bot Attack ($4,200, Discover, C1=95) -> Triggers immediate Block
+   - ⚠️ OTP Challenge ($850, Visa, C1=14)    -> Triggers SMS Challenge
+   - ✅ Normal Grocery ($45, Visa, C1=1)     -> Triggers Instant Approval
+
+2. 📈 STREAMING RISK RADAR (Live Chart.js):
+   Real-time windowed radar showing rolling fraud probability (%) across incoming
+   transactions with green safe baseline (<9%) and red block zone (>=15%).
+
+3. 🔍 EXPLAINABLE AI (XAI) INSPECTOR:
+   Click "🔍 Explain" next to any transaction in the live table to open the
+   XAI Attribution Drawer showing exact feature drivers (velocity bursts,
+   amount outliers, network risk) and the recommended banking security action.
+
+4. 📄 ONE-CLICK REPORT / DOSSIER EXPORT:
+   Click "📄 Export Dossier" on the Benchmarks tab to generate a
+   formatted executive technical report with print / PDF export support.
+================================================================================

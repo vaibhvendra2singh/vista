@@ -1,0 +1,23 @@
+# Environments & Dependencies
+venv/
+env/
+.env
+
+# Datasets & Large Raw Data
+ieee-fraud-detection/
+*.csv.zip
+*.tar.gz
+
+# Document & Binary Artifacts
+*.pdf
+*.docx
+
+# Runtime Logs & Temp outputs
+outputs/*.log
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Root video duplicate (static/bg-video.mp4 is kept)
+16968-277526315.mp4

@@ -1,0 +1,72 @@
+{
+    "Logistic Regression": {
+        "Accuracy": 0.9654,
+        "Precision": 0.9613,
+        "Recall": 0.9654,
+        "F1_Score": 0.9492,
+        "ROC_AUC": 0.7418,
+        "PR_AUC": 0.1888,
+        "ConfusionMatrix": {
+            "TP": 11,
+            "FP": 2,
+            "TN": 16802,
+            "FN": 600
+        }
+    },
+    "Decision Tree": {
+        "Accuracy": 0.9707,
+        "Precision": 0.9654,
+        "Recall": 0.9707,
+        "F1_Score": 0.9637,
+        "ROC_AUC": 0.3989,
+        "PR_AUC": 0.0282,
+        "ConfusionMatrix": {
+            "TP": 154,
+            "FP": 53,
+            "TN": 16751,
+            "FN": 457
+        }
+    },
+    "Random Forest": {
+        "Accuracy": 0.9713,
+        "Precision": 0.9686,
+        "Recall": 0.9713,
+        "F1_Score": 0.9628,
+        "ROC_AUC": 0.8397,
+        "PR_AUC": 0.4311,
+        "ConfusionMatrix": {
+            "TP": 130,
+            "FP": 19,
+            "TN": 16785,
+            "FN": 481
+        }
+    },
+    "Gradient-Boosted Trees (GBT)": {
+        "Accuracy": 0.9713,
+        "Precision": 0.9669,
+        "Recall": 0.9713,
+        "F1_Score": 0.9642,
+        "ROC_AUC": 0.8407,
+        "PR_AUC": 0.4188,
+        "ConfusionMatrix": {
+            "TP": 154,
+            "FP": 42,
+            "TN": 16762,
+            "FN": 457
+        }
+    },
+    "Linear SVM": {
+        "Accuracy": 0.9649,
+        "Precision": 0.9311,
+        "Recall": 0.9649,
+        "F1_Score": 0.9477,
+        "ROC_AUC": 0.6678,
+        "PR_AUC": 0.0945,
+        "ConfusionMatrix": {
+            "TP": 0,
+            "FP": 0,
+            "TN": 16804,
+            "FN": 611
+        }
+    }
+}

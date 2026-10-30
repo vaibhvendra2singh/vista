@@ -1,0 +1,29 @@
+{
+    "best_model_name": "Gradient-Boosted Trees (GBT)",
+    "roc_auc": 0.8407207425868133,
+    "cat_cols": [
+        "ProductCD",
+        "card4",
+        "card6",
+        "P_emaildomain",
+        "DeviceType"
+    ],
+    "num_cols": [
+        "TransactionAmt",
+        "card1",
+        "card2",
+        "addr1",
+        "C1",
+        "C2",
+        "C5",
+        "C9",
+        "C11",
+        "C13",
+        "C14",
+        "D1",
+        "D2",
+        "D4",
+        "D10",
+        "D15"
+    ]
+}
