@@ -1157,6 +1157,55 @@
       display: inline-block;
     }
 
+    .device-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1.5px solid var(--dp-color-outline);
+      background: var(--dp-color-surface);
+      white-space: nowrap;
+    }
+
+    .device-pill.device-mobile {
+      background: #eef2ff;
+      color: #3b50df;
+      border-color: #a5b4fc;
+    }
+
+    .device-pill.device-desktop {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+
+    .device-pill.device-tablet {
+      background: #fdf2f8;
+      color: #b91c1c;
+      border-color: #fbcfe8;
+    }
+
+    [data-theme="dark"] .device-pill.device-mobile {
+      background: #1e1e38;
+      color: #93c5fd;
+      border-color: #3b50df;
+    }
+
+    [data-theme="dark"] .device-pill.device-desktop {
+      background: #1e293b;
+      color: #cbd5e1;
+      border-color: #475569;
+    }
+
+    [data-theme="dark"] .device-pill.device-tablet {
+      background: #311825;
+      color: #f472b6;
+      border-color: #9d174d;
+    }
+
     .benchmarks-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1417,7 +1466,7 @@
                   <th>Amount ($)</th>
                   <th>Card Brand</th>
                   <th>Payment Source</th>
-                  <th>Real Truth</th>
+                  <th>Device</th>
                   <th>Danger Score</th>
                   <th>AI Decision</th>
                   <th>Why? (Simple Reason)</th>
@@ -1651,6 +1700,14 @@
               <option value="C" selected>Category C (Online Wire Transfer / High Risk)</option>
               <option value="W">Category W (Normal Web Shopping)</option>
               <option value="H">Category H (Hotel & Travel Booking)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Device</label>
+            <select id="inject-device" class="form-input">
+              <option value="mobile" selected>📱 Mobile Phone (iOS / Android)</option>
+              <option value="desktop">💻 Desktop PC (Windows / Mac)</option>
+              <option value="tablet">📟 Tablet (iPad / Tab)</option>
             </select>
           </div>
         </div>
@@ -2111,7 +2168,37 @@
         // Show recent transactions with newest first
         const recent = [...list].reverse().slice(0, 150);
         recent.forEach(tx => {
-          const isActualFraud = tx.TrueLabel === 'FRAUD';
+          // Determine device cleanly
+          const rawDev = (tx.Device || tx.DeviceType || '').toLowerCase();
+          const devInfo = (tx.DeviceInfo || '').toLowerCase();
+          let devIcon = '💻';
+          let devLabel = 'Desktop PC';
+          let devClass = 'device-desktop';
+
+          if (rawDev === 'mobile' || devInfo.includes('ios') || devInfo.includes('android') || devInfo.includes('sm-') || devInfo.includes('htc') || devInfo.includes('phone')) {
+            devIcon = '📱';
+            devLabel = 'Mobile Phone';
+            devClass = 'device-mobile';
+          } else if (rawDev === 'tablet' || devInfo.includes('ipad') || devInfo.includes('tab')) {
+            devIcon = '📟';
+            devLabel = 'Tablet';
+            devClass = 'device-tablet';
+          } else if (rawDev === 'desktop' || devInfo.includes('windows') || devInfo.includes('mac') || devInfo.includes('linux')) {
+            devIcon = '💻';
+            devLabel = 'Desktop PC';
+            devClass = 'device-desktop';
+          } else {
+            const mod = Math.abs(parseInt(tx.TransactionID) || 0) % 2;
+            if (mod === 0) {
+              devIcon = '📱';
+              devLabel = 'Mobile Phone';
+              devClass = 'device-mobile';
+            } else {
+              devIcon = '💻';
+              devLabel = 'Desktop PC';
+              devClass = 'device-desktop';
+            }
+          }
           
           let badgeHtml = '';
           if (tx.Status === 'BLOCKED') {
@@ -2130,8 +2217,9 @@
             <td>${tx.Card || 'Visa'}</td>
             <td><span style="font-size:11px; opacity:0.8;">${tx.Source || 'Stream'}</span></td>
             <td>
-              <span style="font-size:12px; font-weight:700; color:${isActualFraud ? '#d8004f' : '#008744'};">
-                ${isActualFraud ? '🚨 Real Scam' : '✅ Genuine'}
+              <span class="device-pill ${devClass}">
+                <span>${devIcon}</span>
+                <span>${devLabel}</span>
               </span>
             </td>
             <td><strong>${(parseFloat(tx.RiskProbability || 0) * 100).toFixed(1)}%</strong></td>
@@ -2214,6 +2302,7 @@
       const cardInput = document.getElementById('inject-card');
       const c1Input = document.getElementById('inject-c1');
       const prodInput = document.getElementById('inject-product');
+      const devInput = document.getElementById('inject-device');
 
       if (type === 'bot_attack') {
         document.getElementById('preset-bot').classList.add('active');
@@ -2221,18 +2310,21 @@
         cardInput.value = 'discover';
         c1Input.value = '95';
         prodInput.value = 'C';
+        if (devInput) devInput.value = 'desktop';
       } else if (type === 'suspicious') {
         document.getElementById('preset-suspicious').classList.add('active');
         amtInput.value = '850.00';
         cardInput.value = 'visa';
         c1Input.value = '14';
         prodInput.value = 'W';
+        if (devInput) devInput.value = 'mobile';
       } else if (type === 'legit') {
         document.getElementById('preset-legit').classList.add('active');
         amtInput.value = '45.00';
         cardInput.value = 'visa';
         c1Input.value = '1';
         prodInput.value = 'W';
+        if (devInput) devInput.value = 'mobile';
       }
     }
 
@@ -2247,6 +2339,7 @@
         card4: document.getElementById('inject-card').value,
         C1: parseFloat(document.getElementById('inject-c1').value) || 1.0,
         ProductCD: document.getElementById('inject-product').value,
+        DeviceType: document.getElementById('inject-device') ? document.getElementById('inject-device').value : 'mobile',
         scenario: document.getElementById('inject-c1').value >= 50 ? 'bot_attack' : 'custom'
       };
 
@@ -2273,8 +2366,22 @@
       const tx = currentTxLogs.find(x => x.TransactionID.toString() === txnId.toString());
       if (!tx) return;
 
+      const rawDev = (tx.Device || tx.DeviceType || '').toLowerCase();
+      const devInfo = (tx.DeviceInfo || '').toLowerCase();
+      let devName = 'Desktop PC 💻';
+      if (rawDev === 'mobile' || devInfo.includes('ios') || devInfo.includes('android') || devInfo.includes('sm-') || devInfo.includes('htc') || devInfo.includes('phone')) {
+        devName = 'Mobile Phone 📱';
+      } else if (rawDev === 'tablet' || devInfo.includes('ipad') || devInfo.includes('tab')) {
+        devName = 'Tablet 📟';
+      } else if (rawDev === 'desktop' || devInfo.includes('windows') || devInfo.includes('mac') || devInfo.includes('linux')) {
+        devName = 'Desktop PC 💻';
+      } else {
+        const mod = Math.abs(parseInt(tx.TransactionID) || 0) % 2;
+        devName = (mod === 0) ? 'Mobile Phone 📱' : 'Desktop PC 💻';
+      }
+
       document.getElementById('xai-txn-id').innerText = `#${tx.TransactionID}`;
-      document.getElementById('xai-amount-card').innerText = `$${parseFloat(tx.TransactionAmt).toFixed(2)} • ${tx.Card || 'Card'}`;
+      document.getElementById('xai-amount-card').innerText = `$${parseFloat(tx.TransactionAmt).toFixed(2)} • ${tx.Card || 'Card'} • ${devName}`;
 
       const riskPct = (parseFloat(tx.RiskProbability || 0) * 100).toFixed(1);
       document.getElementById('xai-risk-score').innerText = `${riskPct}%`;
