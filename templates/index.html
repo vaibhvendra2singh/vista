@@ -1124,161 +1124,91 @@
       background: var(--dp-color-field-soft);
     }
 
+    .badge-fraud, .badge-suspicious, .badge-legit {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+
     .badge-fraud {
       background: #ffe3eb;
       color: #d8004f;
-      border: 2px solid #d8004f;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-weight: 800;
-      font-size: 12px;
-      display: inline-block;
+      border: 1px solid #d8004f;
     }
 
     .badge-suspicious {
       background: #fff8e1;
-      color: #b78103;
-      border: 2px solid #b78103;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-weight: 800;
-      font-size: 12px;
-      display: inline-block;
+      color: #92400e;
+      border: 1px solid #d97706;
     }
 
     .badge-legit {
       background: #e9fff5;
       color: #008744;
-      border: 2px solid #008744;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-weight: 800;
-      font-size: 12px;
-      display: inline-block;
+      border: 1px solid #008744;
     }
 
+    [data-theme="dark"] .badge-fraud {
+      background: #3b101d;
+      color: #fca5a5;
+      border-color: #ef4444;
+    }
+
+    [data-theme="dark"] .badge-suspicious {
+      background: #33220a;
+      color: #fde047;
+      border-color: #d97706;
+    }
+
+    [data-theme="dark"] .badge-legit {
+      background: #0b2b1a;
+      color: #86efac;
+      border-color: #22c55e;
+    }
+
+    /* Clean typography indicators (No circle / capsule bubbles) */
     .device-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
-      border-radius: 9999px;
       font-size: 12px;
-      font-weight: 700;
-      border: 1.5px solid var(--dp-color-outline);
-      background: var(--dp-color-surface);
+      font-weight: 600;
       white-space: nowrap;
+      color: inherit;
+      background: transparent;
+      border: none;
+      padding: 0;
     }
 
-    .device-pill.device-mobile {
-      background: #eef2ff;
-      color: #3b50df;
-      border-color: #a5b4fc;
-    }
-
-    .device-pill.device-desktop {
-      background: #f1f5f9;
-      color: #334155;
-      border-color: #cbd5e1;
-    }
-
-    .device-pill.device-tablet {
-      background: #fdf2f8;
-      color: #b91c1c;
-      border-color: #fbcfe8;
-    }
-
-    [data-theme="dark"] .device-pill.device-mobile {
-      background: #1e1e38;
-      color: #93c5fd;
-      border-color: #3b50df;
-    }
-
-    [data-theme="dark"] .device-pill.device-desktop {
-      background: #1e293b;
-      color: #cbd5e1;
-      border-color: #475569;
-    }
-
-    [data-theme="dark"] .device-pill.device-tablet {
-      background: #311825;
-      color: #f472b6;
-      border-color: #9d174d;
-    }
-
-    /* Purchase Category Pills */
     .cat-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 9999px;
+      gap: 6px;
       font-size: 12px;
-      font-weight: 700;
-      border: 1.5px solid var(--dp-color-outline);
-      background: var(--dp-color-surface);
+      font-weight: 600;
       white-space: nowrap;
+      background: transparent;
+      border: none;
+      padding: 0;
     }
 
-    .cat-pill.cat-web {
-      background: #f0fdf4;
-      color: #166534;
-      border-color: #86efac;
-    }
+    .cat-pill.cat-web { color: #008744; }
+    .cat-pill.cat-wire { color: #d8004f; font-weight: 700; }
+    .cat-pill.cat-recurring { color: #b78103; }
+    .cat-pill.cat-service { color: #2563eb; }
+    .cat-pill.cat-travel { color: #7c3aed; }
 
-    .cat-pill.cat-wire {
-      background: #fef2f2;
-      color: #991b1b;
-      border-color: #fca5a5;
-    }
-
-    .cat-pill.cat-recurring {
-      background: #fefce8;
-      color: #854d0e;
-      border-color: #fde047;
-    }
-
-    .cat-pill.cat-service {
-      background: #eff6ff;
-      color: #1e40af;
-      border-color: #93c5fd;
-    }
-
-    .cat-pill.cat-travel {
-      background: #faf5ff;
-      color: #6b21a8;
-      border-color: #d8b4fe;
-    }
-
-    [data-theme="dark"] .cat-pill.cat-web {
-      background: #0f2e1b;
-      color: #86efac;
-      border-color: #166534;
-    }
-
-    [data-theme="dark"] .cat-pill.cat-wire {
-      background: #361414;
-      color: #fca5a5;
-      border-color: #991b1b;
-    }
-
-    [data-theme="dark"] .cat-pill.cat-recurring {
-      background: #332709;
-      color: #fde047;
-      border-color: #854d0e;
-    }
-
-    [data-theme="dark"] .cat-pill.cat-service {
-      background: #112240;
-      color: #93c5fd;
-      border-color: #1e40af;
-    }
-
-    [data-theme="dark"] .cat-pill.cat-travel {
-      background: #2b1338;
-      color: #d8b4fe;
-      border-color: #6b21a8;
-    }
+    [data-theme="dark"] .cat-pill.cat-web { color: #4ade80; }
+    [data-theme="dark"] .cat-pill.cat-wire { color: #f87171; }
+    [data-theme="dark"] .cat-pill.cat-recurring { color: #facc15; }
+    [data-theme="dark"] .cat-pill.cat-service { color: #60a5fa; }
+    [data-theme="dark"] .cat-pill.cat-travel { color: #c084fc; }
 
     .benchmarks-grid {
       display: grid;
