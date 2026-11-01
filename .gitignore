@@ -10,6 +10,7 @@ ieee-fraud-detection/
 
 # Document & Binary Artifacts
 *.pdf
+!VISTA_PROJECT_DOCUMENTATION.pdf
 *.docx
 
 # Runtime Logs & Temp outputs
